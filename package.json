@@ -1,0 +1,17 @@
+{
+  "name": "kube-tails",
+  "version": "0.0.1",
+  "description": "Tail kubernetes pod logs by name pattern",
+  "main": "index.js",
+  "scripts": {
+    "tail": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": "./index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "1.1.3",
+    "minimist": "1.2.0"
+  }
+}
