@@ -10,5 +10,5 @@ Maybe do this:
 npm install
 npm link
 
-kube-tails <pod-name-pattern>
+kube-tails <pod-name-pattern> --exclude healthcheck
 ```
