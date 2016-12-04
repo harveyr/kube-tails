@@ -19,6 +19,8 @@ const statusColors = {
   Terminating: chalk.yellow
 }
 
+const excludeRegexen = []
+
 let args
 let searchStr
 
@@ -56,6 +58,18 @@ function run () {
   if (args._.length !== 1) {
     console.log('Usage: npm run tail [--namespace name] <pod search pattern>')
     return
+  }
+
+  if (args.exclude) {
+    if (typeof args.exclude === 'object') {
+      args.exclude.forEach(excludeStr => {
+        excludeRegexen.push(new RegExp(`.*${excludeStr}.*`))
+      })
+    } else {
+      excludeRegexen.push(new RegExp(`.*${args.exclude}.*`))
+    }
+
+    console.log('Excluding:', excludeRegexen)
   }
 
   searchStr = args._[0]
@@ -228,6 +242,14 @@ function spawnTail (podName) {
 
   proc.stdout.on('data', function (data) {
     data.toString().trim().split('\n').forEach(line => {
+      if (excludeRegexen.length) {
+        const shouldExclude = excludeRegexen.some(regex => {
+          return regex.test(line)
+        })
+        if (shouldExclude) {
+          return
+        }
+      }
       if (lastPrintedPod.podName !== podName || lastPrintedPod.streamName !== 'stdout') {
         console.log(chalk.bold(`\n==> ${podName} stdout <==`))
         lastPrintedPod.podName = podName
