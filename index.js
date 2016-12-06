@@ -6,6 +6,8 @@ const spawn = require('child_process').spawn
 const chalk = require('chalk')
 const minimist = require('minimist')
 
+const spinner = require('./lib/spinner.js')
+
 const lastPrintedPod = {}
 const pods = {}
 const abandonedPodNames = []
@@ -22,6 +24,7 @@ const statusColors = {
 const excludeRegexen = []
 
 let args
+let lastMessageWasExcluded = false
 let searchStr
 
 function execute (command) {
@@ -231,6 +234,11 @@ function cleanupPod (podName) {
   abandonedPodNames.push(podName)
 }
 
+function printExcludeStatus () {
+  spinner.printOne({moveCursor: lastMessageWasExcluded})
+  lastMessageWasExcluded = true
+}
+
 function spawnTail (podName) {
   console.log(`- starting tail of ${podName}`)
 
@@ -247,15 +255,22 @@ function spawnTail (podName) {
           return regex.test(line)
         })
         if (shouldExclude) {
-          return
+          return printExcludeStatus()
         }
       }
+
+      if (lastMessageWasExcluded) {
+        spinner.clearLine()
+      }
+
       if (lastPrintedPod.podName !== podName || lastPrintedPod.streamName !== 'stdout') {
         console.log(chalk.bold(`\n==> ${podName} stdout <==`))
         lastPrintedPod.podName = podName
         lastPrintedPod.streamName = 'stdout'
       }
+
       console.log(line)
+      lastMessageWasExcluded = false
     })
   })
 
@@ -267,6 +282,7 @@ function spawnTail (podName) {
         lastPrintedPod.streamName = 'stderr'
       }
       console.log(line)
+      lastMessageWasExcluded = false
     })
   })
 
