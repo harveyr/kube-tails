@@ -1,8 +1,10 @@
 # kube-tails
 
-Kubernetes pod logs tailer
+Multi-tail for Kubernetes pods, more or less.
 
-Apologies: I don't even node. 
+I wrote this before I knew about https://github.com/wercker/stern, which you should check out and use first. (See the [blog post](http://blog.kubernetes.io/2016/10/tail-kubernetes-with-stern.html).)
+
+About the code: Apologies; I don't even node. 
 
 Maybe do this:
 
