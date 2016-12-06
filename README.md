@@ -13,4 +13,4 @@ npm link
 kube-tails <pod-name-pattern> --exclude healthcheck
 ```
 
-![example screen capture](docs/meda/screencap.gif)
+![example screen capture](docs/media/screencap.gif)
